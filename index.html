@@ -871,4 +871,60 @@ document.getElementById("videoForm").addEventListener("submit", event => {
   event.preventDefault();
 
   const prompt = document.getElementById("videoPrompt").value.trim();
-  const duration = document
+  const duration = document.getElementById("videoForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const prompt = document.getElementById("videoPrompt").value.trim();
+  const duration = document.getElementById("videoDuration").value;
+
+  if (!prompt) return;
+
+  const request = "Duration: " + duration + "\nPrompt: " + prompt;
+
+  document.getElementById("videoResult").textContent =
+    "Video request prepared. No video has been generated yet.\n\n" + request;
+
+  saveCreation("Video request", request);
+});
+
+document.getElementById("editorForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const fileInput = document.getElementById("editFile");
+  const prompt = document.getElementById("editPrompt").value.trim();
+  const file = fileInput.files[0];
+
+  if (!file || !prompt) return;
+
+  if (!file.type.startsWith("image/")) {
+    document.getElementById("editorResult").textContent =
+      "Please choose a valid image file.";
+    return;
+  }
+
+  const result = document.getElementById("editorResult");
+  result.replaceChildren();
+
+  const description = document.createElement("p");
+  description.textContent =
+    "Editing request prepared: " + prompt + "\nSelected image: " + file.name;
+
+  result.appendChild(description);
+
+  const preview = document.createElement("img");
+  preview.alt = "Preview of your selected image";
+  preview.style.maxWidth = "100%";
+
+  preview.src = URL.createObjectURL(file);
+  result.appendChild(preview);
+
+  saveCreation(
+    "Image editing request",
+    prompt + "\nImage: " + file.name
+  );
+});
+
+renderCreations();
+</script>
+</body>
+</html>
