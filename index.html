@@ -824,31 +824,60 @@ function renderCreations() {
   });
 }
 
-document.getElementById("chatForm").addEventListener("submit", event => {
+document.getElementById("chatForm").addEventListener("submit", async event => {
   event.preventDefault();
 
   const input = document.getElementById("chatInput");
+  const box = document.getElementById("chatBox");
   const message = input.value.trim();
 
   if (!message) return;
-
-  const box = document.getElementById("chatBox");
 
   const userMessage = document.createElement("div");
   userMessage.className = "message user";
   userMessage.textContent = message;
   box.appendChild(userMessage);
 
+  input.value = "";
+  input.disabled = true;
+
   const aiMessage = document.createElement("div");
   aiMessage.className = "message ai";
-  aiMessage.textContent =
-    "Your message has been added to the demo chat. Real AI replies are not connected yet. We'll add a secure AI connection in a later step.";
-
+  aiMessage.textContent = "Zyro AI is thinking...";
   box.appendChild(aiMessage);
   box.scrollTop = box.scrollHeight;
 
-  saveCreation("Chat message", message);
-  input.value = "";
+  try {
+    const response = await fetch(
+      "https://zyro-ai-backend.samsonwonderful61.workers.dev/chat",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Request failed.");
+    }
+
+    aiMessage.textContent = data.reply;
+    saveCreation("Chat conversation", "You: " + message + "\nZyro AI: " + data.reply);
+
+  } catch (error) {
+    aiMessage.textContent =
+      "I couldn't connect right now. Please try again. If this continues, the AI backend may need checking.";
+    console.error("Zyro AI connection error:", error);
+
+  } finally {
+    input.disabled = false;
+    input.focus();
+    box.scrollTop = box.scrollHeight;
+  }
 });
 
 document.getElementById("imageForm").addEventListener("submit", event => {
