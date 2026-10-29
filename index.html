@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b14">
+<title>Zyro AI</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #090b14;
+  --panel: #121625;
+  --border: #252b40;
+  --text: #f4f5ff;
+  --muted: #929ab5;
+  --accent: #8b5cf6;
+  --blue: #38bdf8;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+}
+
+button, input, textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 245px;
+  background: #0d101b;
+  border-right: 1px solid var(--border);
+  padding: 25px 16px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.brand {
+  font-size: 25px;
+  font-weight: 800;
+  margin-bottom: 35px;
+  letter-spacing: -1px;
+}
+
+.brand span {
+  color: var(--accent);
+}
+
+.nav-label {
+  color: var(--muted);
+  font-size: 11px;
+  margin: 20px 10px 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.nav-btn {
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  padding: 13px 12px;
+  width: 100%;
+  text-align: left;
+  color: #b7bfd5;
+  margin-bottom: 5px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.nav-btn:hover, .nav-btn.active {
+  background: #211b3d;
+  color: white;
+}
+
+.nav-btn.active {
+  border-left: 3px solid var(--accent);
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 5px;
+}
+
+.avatar {
+  background: linear-gradient(135deg, var(--accent), var(--blue));
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+}
+
+.user-card small {
+  color: var(--muted);
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+.topbar {
+  padding: 17px 28px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar-title {
+  font-weight: 700;
+}
+
+.status {
+  color: #a7f3d0;
+  background: #103126;
+  border: 1px solid #1d5943;
+  padding: 7px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.content {
+  max-width: 1050px;
+  margin: auto;
+  padding: 35px 28px 60px;
+}
+
+.hero {
+  padding: 35px;
+  background: linear-gradient(125deg, #1d1740, #111a30 65%, #101725);
+  border: 1px solid #343052;
+  border-radius: 22px;
+  margin-bottom: 35px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "✦";
+  position: absolute;
+  right: 35px;
+  top: 5px;
+  font-size: 120px;
+  color: #a78bfa;
+  opacity: .16;
+}
+
+.badge {
+  display: inline-block;
+  padding: 7px 11px;
+  background: #35235c;
+  color: #d8c6ff;
+  border-radius: 20px;
+  font-size: 12px;
+  margin-bottom: 18px;
+}
+
+.hero h1 {
+  font-size: clamp(28px, 4vw, 43px);
+  line-height: 1.15;
+  max-width: 600px;
+  margin-bottom: 15px;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #b69cff, #57caff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero p {
+  color: #b4bbd2;
+  max-width: 550px;
+  line-height: 1.7;
+  margin-bottom: 25px;
+}
+
+.primary-btn {
+  background: linear-gradient(100deg, #8b5cf6, #6366f1);
+  color: white;
+  border: 0;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.primary-btn:hover {
+  filter: brightness(1.15);
+}
+
+.section-title {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.section-subtitle {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.tool-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 23px;
+  transition: .2s;
+}
+
+.tool-card:hover {
+  border-color: #7656ce;
+  transform: translateY(-2px);
+}
+
+.tool-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  background: #241c43;
+  border-radius: 13px;
+  font-size: 22px;
+  margin-bottom: 18px;
+}
+
+.tool-card h3 {
+  font-size: 17px;
+  margin-bottom: 9px;
+}
+
+.tool-card p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.small-btn {
+  border: 1px solid #373e56;
+  background: #191e30;
+  color: white;
+  padding: 9px 13px;
+  border-radius: 9px;
+}
+
+.small-btn:hover {
+  background: #292342;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.workspace {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 23px;
+  border-radius: 16px;
+  margin-top: 20px;
+}
+
+.workspace label {
+  display: block;
+  margin: 17px 0 9px;
+  font-size: 14px;
+  color: #cbd1e5;
+}
+
+.workspace input,
+.workspace textarea,
+.chat-input input {
+  width: 100%;
+  border: 1px solid #343b53;
+  background: #0c101c;
+  color: white;
+  border-radius: 10px;
+  padding: 13px;
+  outline: none;
+}
+
+.workspace textarea {
+  resize: vertical;
+  min-height: 110px;
+  line-height: 1.5;
+}
+
+.workspace input:focus,
+.workspace textarea:focus {
+  border-color: var(--accent);
+}
+
+.workspace input[type="file"] {
+  padding: 10px;
+}
+
+.workspace input[type="file"]::file-selector-button {
+  background: #30234d;
+  border: 0;
+  color: white;
+  padding: 8px;
+  border-radius: 7px;
+  margin-right: 10px;
+}
+
+.result {
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.result img, .result video {
+  max-width: 100%;
+  border-radius: 12px;
+  margin-top: 12px;
+}
+
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  min-height: 220px;
+  max-height: 450px;
+  overflow-y: auto;
+  padding: 5px 0 18px;
+}
+
+.message {
+  max-width: 85%;
+  padding: 12px 15px;
+  border-radius: 14px;
+  line-height: 1.6;
+  font-size: 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.message.ai {
+  background: #1b2133;
+  align-self: flex-start;
+}
+
+.message.user {
+  background: #48308a;
+  align-self: flex-end;
+}
+
+.chat-input {
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input input {
+  flex: 1;
+  min-width: 0;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.preview-item {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  overflow-wrap: anywhere;
+}
+
+.preview-item img, .preview-item video {
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.empty {
+  padding: 40px 15px;
+  text-align: center;
+  border: 1px dashed #343b53;
+  border-radius: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.notice {
+  background: #251f11;
+  border: 1px solid #59451d;
+  color: #f5d58d;
+  padding: 13px;
+  border-radius: 10px;
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.mobile-nav {
+  display: none;
+}
+
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 45px;
+  padding-top: 20px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+@media (max-width: 700px) {
+  .sidebar {
+    display: none;
+  }
+
+  .topbar {
+    padding: 15px 17px;
+  }
+
+  .content {
+    padding: 22px 16px 100px;
+  }
+
+  .hero {
+    padding: 25px 20px;
+  }
+
+  .hero::after {
+    right: 10px;
+    font-size: 80px;
+  }
+
+  .tools-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: #101422;
+    border-top: 1px solid var(--border);
+    padding: 8px 3px calc(8px + env(safe-area-inset-bottom));
+    justify-content: space-around;
+  }
+
+  .mobile-nav button {
+    border: 0;
+    background: transparent;
+    color: #9da6c0;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 4px;
+  }
+
+  .mobile-nav button span {
+    font-size: 19px;
+  }
+
+  .mobile-nav button.active {
+    color: #c4b5fd;
+  }
+
+  .preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chat-input {
+    flex-wrap: wrap;
+  }
+
+  .chat-input button {
+    flex-shrink: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<aside class="sidebar">
+  <div class="brand">Zyro<span> AI</span></div>
+
+  <div class="nav-label">Workspace</div>
+  <button class="nav-btn active" data-page="home">⌂ &nbsp; Home</button>
+  <button class="nav-btn" data-page="chat">✧ &nbsp; AI Chat</button>
+  <button class="nav-btn" data-page="image">▧ &nbsp; Image Generator</button>
+  <button class="nav-btn" data-page="video">▶ &nbsp; Video Generator</button>
+  <button class="nav-btn" data-page="editor">✎ &nbsp; Image Editor</button>
+
+  <div class="nav-label">Library</div>
+  <button class="nav-btn" data-page="creations">▦ &nbsp; My Creations</button>
+  <button class="nav-btn" data-page="premium">◇ &nbsp; Premium</button>
+
+  <div class="sidebar-bottom">
+    <div class="user-card">
+      <div class="avatar">Z</div>
+      <div>
+        <strong>Zyro AI</strong><br>
+        <small>Free workspace</small>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="brand" style="display:none" id="mobileBrand">Zyro<span> AI</span></div>
+    <div class="topbar-title" id="pageTitle">Home</div>
+    <div class="status">● Free plan</div>
+  </header>
+
+  <div class="content">
+
+    <section class="page active" id="home">
+      <div class="hero">
+        <div class="badge">YOUR CREATIVE AI SPACE</div>
+        <h1>Imagine it.<br><span class="gradient-text">Create it with AI.</span></h1>
+        <p>
+          Chat with AI, explore image creation, turn ideas into videos
+          and edit your pictures in one creative workspace.
+        </p>
+        <button class="primary-btn" onclick="showPage('chat')">
+          Start creating →
+        </button>
+      </div>
+
+      <h2 class="section-title">Your creative tools</h2>
+      <p class="section-subtitle">Choose a tool to get started.</p>
+
+      <div class="tools-grid">
+        <div class="tool-card">
+          <div class="tool-icon">✧</div>
+          <h3>AI Chat</h3>
+          <p>Ask questions, develop ideas, write stories and get help.</p>
+          <button class="small-btn" onclick="showPage('chat')">Open chat →</button>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-icon">🎨</div>
+          <h3>AI Image Generator</h3>
+          <p>Turn your imagination into images using text prompts.</p>
+          <button class="small-btn" onclick="showPage('image')">Create image →</button>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-icon">▶</div>
+          <h3>AI Video Generator</h3>
+          <p>Prepare prompts for videos created from text or images.</p>
+          <button class="small-btn" onclick="showPage('video')">Create video →</button>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-icon">✎</div>
+          <h3>AI Image Editor</h3>
+          <p>Preview your pictures and prepare editing instructions.</p>
+          <button class="small-btn" onclick="showPage('editor')">Edit image →</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="chat">
+      <h1 class="section-title">AI Chat</h1>
+      <p class="section-subtitle">
+        Your space to ask questions, explore ideas and write.
+      </p>
+
+      <div class="workspace">
+        <div class="chat-box" id="chatBox">
+          <div class="message ai">
+            Welcome to Zyro AI! I'm your chat workspace.
+
+            The chat interface is ready. Connect an AI service to enable real AI answers.
+          </div>
+        </div>
+
+        <form class="chat-input" id="chatForm">
+          <input id="chatInput" placeholder="Ask Zyro AI something..." autocomplete="off" required>
+          <button class="primary-btn" type="submit">Send</button>
+        </form>
+
+        <div class="notice">
+          Demo mode: messages stay in this browser session. Real AI responses
+          require a secure backend and an AI service.
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="image">
+      <h1 class="section-title">AI Image Generator</h1>
+      <p class="section-subtitle">Describe the image you want to create.</p>
+
+      <div class="workspace">
+        <form id="imageForm">
+          <label for="imagePrompt">Describe your image</label>
+          <textarea id="imagePrompt" placeholder="Example: A futuristic city at sunset, cinematic lighting, highly detailed..." required></textarea>
+
+          <label for="imageStyle">Image style</label>
+          <select id="imageStyle" style="width:100%;padding:12px;border-radius:10px;background:#0c101c;color:white;border:1px solid #343b53">
+            <option>Realistic</option>
+            <option>Cinematic</option>
+            <option>Anime</option>
+            <option>Digital art</option>
+            <option>3D render</option>
+            <option>Illustration</option>
+          </select>
+
+          <br><br>
+          <button class="primary-btn" type="submit">Prepare image request</button>
+        </form>
+
+        <div id="imageResult" class="result"></div>
+      </div>
+    </section>
+
+    <section class="page" id="video">
+      <h1 class="section-title">AI Video Generator</h1>
+      <p class="section-subtitle">Turn your ideas into a video-generation request.</p>
+
+      <div class="workspace">
+        <form id="videoForm">
+          <label for="videoPrompt">Describe your video</label>
+          <textarea id="videoPrompt" placeholder="Example: A farmer walking through a green Nigerian village at sunrise, cinematic camera movement..." required></textarea>
+
+          <label for="videoDuration">Preferred duration</label>
+          <select id="videoDuration" style="width:100%;padding:12px;border-radius:10px;background:#0c101c;color:white;border:1px solid #343b53">
+            <option>5 seconds</option>
+            <option>10 seconds</option>
+            <option>15 seconds</option>
+          </select>
+
+          <br><br>
+          <button class="primary-btn" type="submit">Prepare video request</button>
+        </form>
+
+        <div id="videoResult" class="result"></div>
+
+        <div class="notice">
+          Video generation is not connected yet. Actual video creation needs
+          a compatible AI video service, which may have usage limits or charges.
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="editor">
+      <h1 class="section-title">Image Editor</h1>
+      <p class="section-subtitle">Preview a picture and prepare editing instructions.</p>
+
+      <div class="workspace">
+        <form id="editorForm">
+          <label for="editFile">Choose an image</label>
+          <input type="file" id="editFile" accept="image/*" required>
+
+          <label for="editPrompt">What would you like to change?</label>
+          <textarea id="editPrompt" placeholder="Example: Replace the background with a beautiful beach at sunset..." required></textarea>
+
+          <button class="primary-btn" type="submit">Preview editing request</button>
+        </form>
+
+        <div id="editorResult" class="result"></div>
+        <div class="notice">
+          This preview does not modify the original image. AI editing will be
+          added when we connect an image-editing service.
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="creations">
+      <h1 class="section-title">My Creations</h1>
+      <p class="section-subtitle">Your saved prompts and local previews.</p>
+
+      <div id="creationsGrid" class="preview-grid"></div>
+    </section>
+
+    <section class="page" id="premium">
+      <h1 class="section-title">Zyro AI Premium</h1>
+      <p class="section-subtitle">Premium features are planned for a future release.</p>
+
+      <div class="workspace">
+        <div class="tool-icon">◇</div>
+        <h2>More room to create</h2>
+        <br>
+        <p style="color:var(--muted);line-height:1.8">
+          Future plans may include higher generation limits, advanced editing
+          and additional creative tools.
+        </p>
+        <br>
+        <button class="primary-btn" onclick="alert('Premium is not available yet.')">
+          Coming soon
+        </button>
+      </div>
+    </section>
+
+    <footer>
+      <strong>Zyro AI</strong><br>
+      Your imagination, your creative space.<br>
+      Version 1.0 · AI services not connected yet.
+    </footer>
+
+  </div>
+</main>
+</div>
+
+<nav class="mobile-nav">
+  <button class="active" data-page="home"><span>⌂</span>Home</button>
+  <button data-page="chat"><span>✧</span>Chat</button>
+  <button data-page="image"><span>▧</span>Images</button>
+  <button data-page="video"><span>▶</span>Videos</button>
+  <button data-page="creations"><span>▦</span>Library</button>
+</nav>
+
+<script>
+const pageNames = {
+  home: "Home",
+  chat: "AI Chat",
+  image: "Image Generator",
+  video: "Video Generator",
+  editor: "Image Editor",
+  creations: "My Creations",
+  premium: "Premium"
+};
+
+function showPage(page) {
+  document.querySelectorAll(".page").forEach(section => {
+    section.classList.toggle("active", section.id === page);
+  });
+
+  document.querySelectorAll("[data-page]").forEach(button => {
+    button.classList.toggle("active", button.dataset.page === page);
+  });
+
+  document.getElementById("pageTitle").textContent = pageNames[page] || "Zyro AI";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.querySelectorAll("[data-page]").forEach(button => {
+  button.addEventListener("click", () => showPage(button.dataset.page));
+});
+
+const creations = [];
+
+function saveCreation(title, text) {
+  creations.unshift({ title, text });
+  renderCreations();
+}
+
+function renderCreations() {
+  const grid = document.getElementById("creationsGrid");
+
+  if (!creations.length) {
+    grid.innerHTML = `
+      <div class="empty" style="grid-column:1/-1">
+        <div style="font-size:30px;margin-bottom:10px">▦</div>
+        No creations yet.<br>
+        Prepare a chat, image, video or editing request to see it here.
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = "";
+
+  creations.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "preview-item";
+
+    const heading = document.createElement("strong");
+    heading.textContent = item.title;
+
+    const paragraph = document.createElement("p");
+    paragraph.style.cssText = "color:#929ab5;font-size:13px;line-height:1.6;margin-top:8px;white-space:pre-wrap";
+    paragraph.textContent = item.text;
+
+    card.append(heading, paragraph);
+    grid.appendChild(card);
+  });
+}
+
+document.getElementById("chatForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const input = document.getElementById("chatInput");
+  const message = input.value.trim();
+
+  if (!message) return;
+
+  const box = document.getElementById("chatBox");
+
+  const userMessage = document.createElement("div");
+  userMessage.className = "message user";
+  userMessage.textContent = message;
+  box.appendChild(userMessage);
+
+  const aiMessage = document.createElement("div");
+  aiMessage.className = "message ai";
+  aiMessage.textContent =
+    "Your message has been added to the demo chat. Real AI replies are not connected yet. We'll add a secure AI connection in a later step.";
+
+  box.appendChild(aiMessage);
+  box.scrollTop = box.scrollHeight;
+
+  saveCreation("Chat message", message);
+  input.value = "";
+});
+
+document.getElementById("imageForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const prompt = document.getElementById("imagePrompt").value.trim();
+  const style = document.getElementById("imageStyle").value;
+
+  if (!prompt) return;
+
+  const request = "Style: " + style + "\nPrompt: " + prompt;
+
+  document.getElementById("imageResult").textContent =
+    "Image request prepared. No image has been generated yet.\n\n" + request;
+
+  saveCreation("Image request", request);
+});
+
+document.getElementById("videoForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const prompt = document.getElementById("videoPrompt").value.trim();
+  const duration = document
