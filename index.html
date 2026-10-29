@@ -868,23 +868,19 @@ document.getElementById("imageForm").addEventListener("submit", event => {
 });
 
 document.getElementById("videoForm").addEventListener("submit", event => {
-  event.preventDefault();
+event.preventDefault();
 
-  const prompt = document.getElementById("videoPrompt").value.trim();
-  const duration = document.getElementById("videoForm").addEventListener("submit", event => {
-  event.preventDefault();
+const prompt = document.getElementById("videoPrompt").value.trim();
+const duration = document.getElementById("videoDuration").value;
 
-  const prompt = document.getElementById("videoPrompt").value.trim();
-  const duration = document.getElementById("videoDuration").value;
+if (!prompt) return;
 
-  if (!prompt) return;
+const request = "Duration: " + duration + "\nPrompt: " + prompt;
 
-  const request = "Duration: " + duration + "\nPrompt: " + prompt;
+document.getElementById("videoResult").textContent =
+"Video request prepared. No video has been generated yet.\n\n" + request;
 
-  document.getElementById("videoResult").textContent =
-    "Video request prepared. No video has been generated yet.\n\n" + request;
-
-  saveCreation("Video request", request);
+saveCreation("Video request", request);
 });
 
 document.getElementById("editorForm").addEventListener("submit", event => {
